@@ -23852,7 +23852,7 @@ acQ:function acQ(a,b){this.a=a
 this.b=b},
 acU:function acU(a){this.a=a},
 acP:function acP(a){this.a=a},
-aC5(){var s,r,q,p,o,n,m=null,l=A.as(["/",new A.afT(),"/plan",new A.afU()],t.N,t.Ab),k=A.yx(m,$.ajq(),m)
+aC5(){var s,r,q,p,o,n,m=null,l=A.as(["/start",new A.afT(),"/plan",new A.afU()],t.N,t.Ab),k=A.yx(m,$.ajq(),m)
 if($.ac==null)A.ay_()
 s=$.ac
 s.toString
@@ -23868,7 +23868,7 @@ n.au()
 n.saJ(m)
 s.CW$!==$&&A.a6()
 s.CW$=n
-o=n}s.SS(new A.JP(q,new A.vQ(l,"/","J Planner",k,!1,m),p,o,m))
+o=n}s.SS(new A.JP(q,new A.vQ(l,"/start","J Planner",k,!1,m),p,o,m))
 s.FX()},
 afT:function afT(){},
 afU:function afU(){},

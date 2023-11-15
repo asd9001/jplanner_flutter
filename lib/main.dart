@@ -7,9 +7,9 @@ import 'package:j_planner/screen/start_screen.dart';
 void main() {
   runApp(
     MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/start',
       routes: {
-        '/': (context) => StartScreen(),
+        '/start': (context) => StartScreen(),
         '/plan' : (context) => HomeScreen(),
       },
       debugShowCheckedModeBanner: false,
