@@ -1,5 +1,8 @@
 import 'package:j_planner/schedule/schedule.dart';
-
+var sample_users = [
+  ["asd9001@naver.com", "chang", "changhoe"],
+  ["songx999@gmail.com", "dubu", "songyi"],
+];
 final zero_date = DateTime.utc(0, 0, 0);
 var sample_dates = [
   DateTime.utc(2023, 1, 1),

@@ -38,6 +38,11 @@ dependencies:
   intl: ^0.18.1
   syncfusion_flutter_datepicker: ^23.1.43
   custom_date_range_picker: ^1.0.10
+  drift: ^2.13.1
+  path_provider: ^2.0.0
+  path: ^1.8.1
+  get_it: ^7.6.4
+  sqlite3_flutter_libs: ^0.5.18
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +54,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  drift_dev: ^2.13.1
+  build_runner: ^2.2.0
+  sqlite3_flutter_libs: ^0.5.18
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

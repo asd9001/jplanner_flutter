@@ -45,19 +45,19 @@ class _HomeScreenState extends State<HomeScreen> {
       dates = calculateDates(startDate!, endDate!);
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit_calendar),
-            onPressed: showDateRangePickerDialog,
-          ),
-        ],
-        title: const Text(TITLE),
-        backgroundColor: PRIMARY_COLOR,
-      ),
-      body: SafeArea(
-        child: ListView(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.edit_calendar),
+              onPressed: showDateRangePickerDialog,
+            ),
+          ],
+          title: const Text(TITLE),
+          backgroundColor: PRIMARY_COLOR,
+        ),
+        body: ListView(
           children: dates
               .map((e) => DayPlan(
                     day: e,
@@ -65,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ))
               .toList(),
         ),
+        // floatingActionButton: renderFloatingActionButton(),
       ),
-      // floatingActionButton: renderFloatingActionButton(),
     );
   }
 

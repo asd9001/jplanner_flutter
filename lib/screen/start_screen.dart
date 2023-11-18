@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:j_planner/const/colors.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.cyanAccent,
-      ),
-      body: SafeArea(
-        child: Container(
-          color: Colors.cyanAccent,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: PRIMARY_COLOR,
+        ),
+        body: Container(
+          color: PRIMARY_COLOR,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -28,10 +29,7 @@ class StartScreen extends StatelessWidget {
                     const EdgeInsets.symmetric(vertical: 50, horizontal: 50),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/plan');
-                    // Navigator.of(context).push(
-                    //   Meterial
-                    // )
+                    Navigator.of(context).pushNamed('/login');
                   },
                   child: Text("Start to plan"),
                 ),

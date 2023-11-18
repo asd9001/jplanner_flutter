@@ -10,4 +10,5 @@ var rainbowColors = [
   Colors.purple,
 ];
 
-var PRIMARY_COLOR = Colors.blue.withOpacity(0.8);
+// var PRIMARY_COLOR = Colors.blue.withOpacity(0.8);
+var PRIMARY_COLOR = Colors.cyanAccent;
