@@ -51,6 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text("PASSWORD"),
                     SizedBox(height: 20),
                     TextFormField(
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
                       onSaved: (val) {
                         if (val != null) {
                           setState(() {
@@ -67,14 +70,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
-                        if (this.formKey.currentState == null) {
+                        if (formKey.currentState == null) {
                           return;
                         }
-                        if (this.formKey.currentState!.validate()) {
-                          this.formKey.currentState!.save();
+                        if (formKey.currentState!.validate()) {
+                          formKey.currentState!.save();
                         }
-                        print(this.email);
-                        print(this.pw);
+                        print(email);
+                        print(pw);
                         final users = await GetIt.I<LocalDatabase>().selectUser(this.email, this.pw);
                         if (users.length < 1) {
                           showDialog<String>(

@@ -755,11 +755,15 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $TripsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _tripIdMeta = const VerificationMeta('tripId');
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> tripId = GeneratedColumn<int>(
-      'trip_id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
   static const VerificationMeta _authIdMeta = const VerificationMeta('authId');
   @override
   late final GeneratedColumn<int> authId = GeneratedColumn<int>(
@@ -785,7 +789,7 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
       type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [tripId, authId, tripStartDate, tripEndDate, tripCountry];
+      [id, authId, tripStartDate, tripEndDate, tripCountry];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -796,11 +800,8 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('trip_id')) {
-      context.handle(_tripIdMeta,
-          tripId.isAcceptableOrUnknown(data['trip_id']!, _tripIdMeta));
-    } else if (isInserting) {
-      context.missing(_tripIdMeta);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('auth_id')) {
       context.handle(_authIdMeta,
@@ -836,13 +837,13 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Trip map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Trip(
-      tripId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}trip_id'])!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       authId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}auth_id'])!,
       tripStartDate: attachedDatabase.typeMapping.read(
@@ -861,13 +862,13 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
 }
 
 class Trip extends DataClass implements Insertable<Trip> {
-  final int tripId;
+  final int id;
   final int authId;
   final DateTime tripStartDate;
   final DateTime tripEndDate;
   final String tripCountry;
   const Trip(
-      {required this.tripId,
+      {required this.id,
       required this.authId,
       required this.tripStartDate,
       required this.tripEndDate,
@@ -875,7 +876,7 @@ class Trip extends DataClass implements Insertable<Trip> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['trip_id'] = Variable<int>(tripId);
+    map['id'] = Variable<int>(id);
     map['auth_id'] = Variable<int>(authId);
     map['trip_start_date'] = Variable<DateTime>(tripStartDate);
     map['trip_end_date'] = Variable<DateTime>(tripEndDate);
@@ -885,7 +886,7 @@ class Trip extends DataClass implements Insertable<Trip> {
 
   TripsCompanion toCompanion(bool nullToAbsent) {
     return TripsCompanion(
-      tripId: Value(tripId),
+      id: Value(id),
       authId: Value(authId),
       tripStartDate: Value(tripStartDate),
       tripEndDate: Value(tripEndDate),
@@ -897,7 +898,7 @@ class Trip extends DataClass implements Insertable<Trip> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Trip(
-      tripId: serializer.fromJson<int>(json['tripId']),
+      id: serializer.fromJson<int>(json['id']),
       authId: serializer.fromJson<int>(json['authId']),
       tripStartDate: serializer.fromJson<DateTime>(json['tripStartDate']),
       tripEndDate: serializer.fromJson<DateTime>(json['tripEndDate']),
@@ -908,7 +909,7 @@ class Trip extends DataClass implements Insertable<Trip> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'tripId': serializer.toJson<int>(tripId),
+      'id': serializer.toJson<int>(id),
       'authId': serializer.toJson<int>(authId),
       'tripStartDate': serializer.toJson<DateTime>(tripStartDate),
       'tripEndDate': serializer.toJson<DateTime>(tripEndDate),
@@ -917,13 +918,13 @@ class Trip extends DataClass implements Insertable<Trip> {
   }
 
   Trip copyWith(
-          {int? tripId,
+          {int? id,
           int? authId,
           DateTime? tripStartDate,
           DateTime? tripEndDate,
           String? tripCountry}) =>
       Trip(
-        tripId: tripId ?? this.tripId,
+        id: id ?? this.id,
         authId: authId ?? this.authId,
         tripStartDate: tripStartDate ?? this.tripStartDate,
         tripEndDate: tripEndDate ?? this.tripEndDate,
@@ -932,7 +933,7 @@ class Trip extends DataClass implements Insertable<Trip> {
   @override
   String toString() {
     return (StringBuffer('Trip(')
-          ..write('tripId: $tripId, ')
+          ..write('id: $id, ')
           ..write('authId: $authId, ')
           ..write('tripStartDate: $tripStartDate, ')
           ..write('tripEndDate: $tripEndDate, ')
@@ -943,12 +944,12 @@ class Trip extends DataClass implements Insertable<Trip> {
 
   @override
   int get hashCode =>
-      Object.hash(tripId, authId, tripStartDate, tripEndDate, tripCountry);
+      Object.hash(id, authId, tripStartDate, tripEndDate, tripCountry);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Trip &&
-          other.tripId == this.tripId &&
+          other.id == this.id &&
           other.authId == this.authId &&
           other.tripStartDate == this.tripStartDate &&
           other.tripEndDate == this.tripEndDate &&
@@ -956,72 +957,64 @@ class Trip extends DataClass implements Insertable<Trip> {
 }
 
 class TripsCompanion extends UpdateCompanion<Trip> {
-  final Value<int> tripId;
+  final Value<int> id;
   final Value<int> authId;
   final Value<DateTime> tripStartDate;
   final Value<DateTime> tripEndDate;
   final Value<String> tripCountry;
-  final Value<int> rowid;
   const TripsCompanion({
-    this.tripId = const Value.absent(),
+    this.id = const Value.absent(),
     this.authId = const Value.absent(),
     this.tripStartDate = const Value.absent(),
     this.tripEndDate = const Value.absent(),
     this.tripCountry = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   TripsCompanion.insert({
-    required int tripId,
+    this.id = const Value.absent(),
     required int authId,
     required DateTime tripStartDate,
     required DateTime tripEndDate,
     required String tripCountry,
-    this.rowid = const Value.absent(),
-  })  : tripId = Value(tripId),
-        authId = Value(authId),
+  })  : authId = Value(authId),
         tripStartDate = Value(tripStartDate),
         tripEndDate = Value(tripEndDate),
         tripCountry = Value(tripCountry);
   static Insertable<Trip> custom({
-    Expression<int>? tripId,
+    Expression<int>? id,
     Expression<int>? authId,
     Expression<DateTime>? tripStartDate,
     Expression<DateTime>? tripEndDate,
     Expression<String>? tripCountry,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (tripId != null) 'trip_id': tripId,
+      if (id != null) 'id': id,
       if (authId != null) 'auth_id': authId,
       if (tripStartDate != null) 'trip_start_date': tripStartDate,
       if (tripEndDate != null) 'trip_end_date': tripEndDate,
       if (tripCountry != null) 'trip_country': tripCountry,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
   TripsCompanion copyWith(
-      {Value<int>? tripId,
+      {Value<int>? id,
       Value<int>? authId,
       Value<DateTime>? tripStartDate,
       Value<DateTime>? tripEndDate,
-      Value<String>? tripCountry,
-      Value<int>? rowid}) {
+      Value<String>? tripCountry}) {
     return TripsCompanion(
-      tripId: tripId ?? this.tripId,
+      id: id ?? this.id,
       authId: authId ?? this.authId,
       tripStartDate: tripStartDate ?? this.tripStartDate,
       tripEndDate: tripEndDate ?? this.tripEndDate,
       tripCountry: tripCountry ?? this.tripCountry,
-      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (tripId.present) {
-      map['trip_id'] = Variable<int>(tripId.value);
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
     }
     if (authId.present) {
       map['auth_id'] = Variable<int>(authId.value);
@@ -1035,21 +1028,17 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     if (tripCountry.present) {
       map['trip_country'] = Variable<String>(tripCountry.value);
     }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
     return map;
   }
 
   @override
   String toString() {
     return (StringBuffer('TripsCompanion(')
-          ..write('tripId: $tripId, ')
+          ..write('id: $id, ')
           ..write('authId: $authId, ')
           ..write('tripStartDate: $tripStartDate, ')
           ..write('tripEndDate: $tripEndDate, ')
-          ..write('tripCountry: $tripCountry, ')
-          ..write('rowid: $rowid')
+          ..write('tripCountry: $tripCountry')
           ..write(')'))
         .toString();
   }
@@ -1079,7 +1068,9 @@ class $AuthsTable extends Auths with TableInfo<$AuthsTable, Auth> {
   @override
   late final GeneratedColumn<int> authReadOnly = GeneratedColumn<int>(
       'auth_read_only', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns => [authId, userId, authReadOnly];
   @override
@@ -1107,8 +1098,6 @@ class $AuthsTable extends Auths with TableInfo<$AuthsTable, Auth> {
           _authReadOnlyMeta,
           authReadOnly.isAcceptableOrUnknown(
               data['auth_read_only']!, _authReadOnlyMeta));
-    } else if (isInserting) {
-      context.missing(_authReadOnlyMeta);
     }
     return context;
   }
@@ -1214,9 +1203,8 @@ class AuthsCompanion extends UpdateCompanion<Auth> {
   AuthsCompanion.insert({
     this.authId = const Value.absent(),
     required int userId,
-    required int authReadOnly,
-  })  : userId = Value(userId),
-        authReadOnly = Value(authReadOnly);
+    this.authReadOnly = const Value.absent(),
+  }) : userId = Value(userId);
   static Insertable<Auth> custom({
     Expression<int>? authId,
     Expression<int>? userId,

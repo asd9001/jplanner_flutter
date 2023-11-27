@@ -19,9 +19,12 @@ samples, guidance on mobile development, and a full API reference.
 ```bash
 flutter pub run build_runner build 
 ```
-# Web build 방법
+# Web build & deploy 방법
 ```bash
 flutter build web --base-href /jplanner_flutter/build/web/
+git add -A
+git commit -m 'COMMENT'
+git push origin
 ```
 flutter 로 web 을 빌드하면 build/web/ 경로에 브라우저에서 사용할 파일들이 생성된다.
 이걸 현재 git repo 인 https://github.com/asd9001/jplanner_flutter.git 에 push 하면 자동으로 

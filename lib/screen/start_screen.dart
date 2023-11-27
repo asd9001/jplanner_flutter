@@ -29,7 +29,8 @@ class StartScreen extends StatelessWidget {
                     const EdgeInsets.symmetric(vertical: 50, horizontal: 50),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/login');
+                    // Navigator.of(context).pushNamed('/login');
+                    Navigator.of(context).pushNamed('/select');
                   },
                   child: Text("Start to plan"),
                 ),

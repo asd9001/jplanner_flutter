@@ -11,4 +11,4 @@ var rainbowColors = [
 ];
 
 // var PRIMARY_COLOR = Colors.blue.withOpacity(0.8);
-var PRIMARY_COLOR = Colors.cyanAccent;
+var PRIMARY_COLOR = Color(0xFF81D8CF);

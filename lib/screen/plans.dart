@@ -3,17 +3,18 @@ import 'package:j_planner/component/day_plan.dart';
 import 'package:j_planner/const/colors.dart';
 import 'package:j_planner/const/sample_data.dart';
 import 'package:custom_date_range_picker/custom_date_range_picker.dart';
+import 'package:j_planner/database/drift_database.dart';
 
 import '../const/words.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class PlansScreen extends StatefulWidget {
+  const PlansScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<PlansScreen> createState() => _PlansScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _PlansScreenState extends State<PlansScreen> {
   var dates = sample_dates;
   var plans = sample_data;
 
@@ -21,14 +22,14 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime? endDate;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    if (startDate == null || endDate == null) {
-      return;
-    }
-    dates = calculateDates(startDate!, endDate!);
-  }
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   if (startDate == null || endDate == null) {
+  //     return;
+  //   }
+  //   dates = calculateDates(startDate!, endDate!);
+  // }
 
   List<DateTime> calculateDates(DateTime startDate, DateTime endDate) {
     List<DateTime> result = [];
@@ -41,6 +42,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var arg = ModalRoute.of(context)!.settings.arguments;
+    Trip trip;
+
+    if (arg == null) {
+      trip = Trip(
+        id: 99999,
+        authId: 99999,
+        tripStartDate: DateTime.now(),
+        tripEndDate: DateTime.now(),
+        tripCountry: "Seoul",
+      );
+    } else {
+      trip = arg as Trip;
+    }
+    startDate = trip.tripStartDate;
+    endDate = trip.tripEndDate;
+    print(trip);
+    print(startDate);
+    print(endDate);
+
     if (startDate != null && endDate != null) {
       dates = calculateDates(startDate!, endDate!);
     }
