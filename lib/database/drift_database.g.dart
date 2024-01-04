@@ -8,16 +8,17 @@ class $PlansTable extends Plans with TableInfo<$PlansTable, Plan> {
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $PlansTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _authIdMeta = const VerificationMeta('authId');
+  static const VerificationMeta _tripIdMeta = const VerificationMeta('tripId');
   @override
-  late final GeneratedColumn<int> authId = GeneratedColumn<int>(
-      'auth_id', aliasedName, false,
+  late final GeneratedColumn<int> tripId = GeneratedColumn<int>(
+      'trip_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  static const VerificationMeta _planDateMeta =
+      const VerificationMeta('planDate');
   @override
-  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
-      'user_id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> planDate = GeneratedColumn<DateTime>(
+      'plan_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _planOrderMeta =
       const VerificationMeta('planOrder');
   @override
@@ -66,10 +67,18 @@ class $PlansTable extends Plans with TableInfo<$PlansTable, Plan> {
   late final GeneratedColumn<int> planWallet = GeneratedColumn<int>(
       'plan_wallet', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _planCreatedMeta =
+      const VerificationMeta('planCreated');
+  @override
+  late final GeneratedColumn<DateTime> planCreated = GeneratedColumn<DateTime>(
+      'plan_created', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
   @override
   List<GeneratedColumn> get $columns => [
-        authId,
-        userId,
+        tripId,
+        planDate,
         planOrder,
         planSubject,
         planContent,
@@ -77,7 +86,8 @@ class $PlansTable extends Plans with TableInfo<$PlansTable, Plan> {
         planType,
         planTime,
         planDuration,
-        planWallet
+        planWallet,
+        planCreated
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -89,17 +99,17 @@ class $PlansTable extends Plans with TableInfo<$PlansTable, Plan> {
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('auth_id')) {
-      context.handle(_authIdMeta,
-          authId.isAcceptableOrUnknown(data['auth_id']!, _authIdMeta));
+    if (data.containsKey('trip_id')) {
+      context.handle(_tripIdMeta,
+          tripId.isAcceptableOrUnknown(data['trip_id']!, _tripIdMeta));
     } else if (isInserting) {
-      context.missing(_authIdMeta);
+      context.missing(_tripIdMeta);
     }
-    if (data.containsKey('user_id')) {
-      context.handle(_userIdMeta,
-          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    if (data.containsKey('plan_date')) {
+      context.handle(_planDateMeta,
+          planDate.isAcceptableOrUnknown(data['plan_date']!, _planDateMeta));
     } else if (isInserting) {
-      context.missing(_userIdMeta);
+      context.missing(_planDateMeta);
     }
     if (data.containsKey('plan_order')) {
       context.handle(_planOrderMeta,
@@ -159,6 +169,12 @@ class $PlansTable extends Plans with TableInfo<$PlansTable, Plan> {
     } else if (isInserting) {
       context.missing(_planWalletMeta);
     }
+    if (data.containsKey('plan_created')) {
+      context.handle(
+          _planCreatedMeta,
+          planCreated.isAcceptableOrUnknown(
+              data['plan_created']!, _planCreatedMeta));
+    }
     return context;
   }
 
@@ -168,10 +184,10 @@ class $PlansTable extends Plans with TableInfo<$PlansTable, Plan> {
   Plan map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Plan(
-      authId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}auth_id'])!,
-      userId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!,
+      tripId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}trip_id'])!,
+      planDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}plan_date'])!,
       planOrder: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}plan_order'])!,
       planSubject: attachedDatabase.typeMapping
@@ -188,6 +204,8 @@ class $PlansTable extends Plans with TableInfo<$PlansTable, Plan> {
           .read(DriftSqlType.int, data['${effectivePrefix}plan_duration'])!,
       planWallet: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}plan_wallet'])!,
+      planCreated: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}plan_created'])!,
     );
   }
 
@@ -198,8 +216,8 @@ class $PlansTable extends Plans with TableInfo<$PlansTable, Plan> {
 }
 
 class Plan extends DataClass implements Insertable<Plan> {
-  final int authId;
-  final int userId;
+  final int tripId;
+  final DateTime planDate;
   final int planOrder;
   final String planSubject;
   final String planContent;
@@ -208,9 +226,10 @@ class Plan extends DataClass implements Insertable<Plan> {
   final DateTime planTime;
   final int planDuration;
   final int planWallet;
+  final DateTime planCreated;
   const Plan(
-      {required this.authId,
-      required this.userId,
+      {required this.tripId,
+      required this.planDate,
       required this.planOrder,
       required this.planSubject,
       required this.planContent,
@@ -218,12 +237,13 @@ class Plan extends DataClass implements Insertable<Plan> {
       required this.planType,
       required this.planTime,
       required this.planDuration,
-      required this.planWallet});
+      required this.planWallet,
+      required this.planCreated});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['auth_id'] = Variable<int>(authId);
-    map['user_id'] = Variable<int>(userId);
+    map['trip_id'] = Variable<int>(tripId);
+    map['plan_date'] = Variable<DateTime>(planDate);
     map['plan_order'] = Variable<int>(planOrder);
     map['plan_subject'] = Variable<String>(planSubject);
     map['plan_content'] = Variable<String>(planContent);
@@ -232,13 +252,14 @@ class Plan extends DataClass implements Insertable<Plan> {
     map['plan_time'] = Variable<DateTime>(planTime);
     map['plan_duration'] = Variable<int>(planDuration);
     map['plan_wallet'] = Variable<int>(planWallet);
+    map['plan_created'] = Variable<DateTime>(planCreated);
     return map;
   }
 
   PlansCompanion toCompanion(bool nullToAbsent) {
     return PlansCompanion(
-      authId: Value(authId),
-      userId: Value(userId),
+      tripId: Value(tripId),
+      planDate: Value(planDate),
       planOrder: Value(planOrder),
       planSubject: Value(planSubject),
       planContent: Value(planContent),
@@ -247,6 +268,7 @@ class Plan extends DataClass implements Insertable<Plan> {
       planTime: Value(planTime),
       planDuration: Value(planDuration),
       planWallet: Value(planWallet),
+      planCreated: Value(planCreated),
     );
   }
 
@@ -254,8 +276,8 @@ class Plan extends DataClass implements Insertable<Plan> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Plan(
-      authId: serializer.fromJson<int>(json['authId']),
-      userId: serializer.fromJson<int>(json['userId']),
+      tripId: serializer.fromJson<int>(json['tripId']),
+      planDate: serializer.fromJson<DateTime>(json['planDate']),
       planOrder: serializer.fromJson<int>(json['planOrder']),
       planSubject: serializer.fromJson<String>(json['planSubject']),
       planContent: serializer.fromJson<String>(json['planContent']),
@@ -264,14 +286,15 @@ class Plan extends DataClass implements Insertable<Plan> {
       planTime: serializer.fromJson<DateTime>(json['planTime']),
       planDuration: serializer.fromJson<int>(json['planDuration']),
       planWallet: serializer.fromJson<int>(json['planWallet']),
+      planCreated: serializer.fromJson<DateTime>(json['planCreated']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'authId': serializer.toJson<int>(authId),
-      'userId': serializer.toJson<int>(userId),
+      'tripId': serializer.toJson<int>(tripId),
+      'planDate': serializer.toJson<DateTime>(planDate),
       'planOrder': serializer.toJson<int>(planOrder),
       'planSubject': serializer.toJson<String>(planSubject),
       'planContent': serializer.toJson<String>(planContent),
@@ -280,12 +303,13 @@ class Plan extends DataClass implements Insertable<Plan> {
       'planTime': serializer.toJson<DateTime>(planTime),
       'planDuration': serializer.toJson<int>(planDuration),
       'planWallet': serializer.toJson<int>(planWallet),
+      'planCreated': serializer.toJson<DateTime>(planCreated),
     };
   }
 
   Plan copyWith(
-          {int? authId,
-          int? userId,
+          {int? tripId,
+          DateTime? planDate,
           int? planOrder,
           String? planSubject,
           String? planContent,
@@ -293,10 +317,11 @@ class Plan extends DataClass implements Insertable<Plan> {
           int? planType,
           DateTime? planTime,
           int? planDuration,
-          int? planWallet}) =>
+          int? planWallet,
+          DateTime? planCreated}) =>
       Plan(
-        authId: authId ?? this.authId,
-        userId: userId ?? this.userId,
+        tripId: tripId ?? this.tripId,
+        planDate: planDate ?? this.planDate,
         planOrder: planOrder ?? this.planOrder,
         planSubject: planSubject ?? this.planSubject,
         planContent: planContent ?? this.planContent,
@@ -305,12 +330,13 @@ class Plan extends DataClass implements Insertable<Plan> {
         planTime: planTime ?? this.planTime,
         planDuration: planDuration ?? this.planDuration,
         planWallet: planWallet ?? this.planWallet,
+        planCreated: planCreated ?? this.planCreated,
       );
   @override
   String toString() {
     return (StringBuffer('Plan(')
-          ..write('authId: $authId, ')
-          ..write('userId: $userId, ')
+          ..write('tripId: $tripId, ')
+          ..write('planDate: $planDate, ')
           ..write('planOrder: $planOrder, ')
           ..write('planSubject: $planSubject, ')
           ..write('planContent: $planContent, ')
@@ -318,20 +344,31 @@ class Plan extends DataClass implements Insertable<Plan> {
           ..write('planType: $planType, ')
           ..write('planTime: $planTime, ')
           ..write('planDuration: $planDuration, ')
-          ..write('planWallet: $planWallet')
+          ..write('planWallet: $planWallet, ')
+          ..write('planCreated: $planCreated')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(authId, userId, planOrder, planSubject,
-      planContent, planCategory, planType, planTime, planDuration, planWallet);
+  int get hashCode => Object.hash(
+      tripId,
+      planDate,
+      planOrder,
+      planSubject,
+      planContent,
+      planCategory,
+      planType,
+      planTime,
+      planDuration,
+      planWallet,
+      planCreated);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Plan &&
-          other.authId == this.authId &&
-          other.userId == this.userId &&
+          other.tripId == this.tripId &&
+          other.planDate == this.planDate &&
           other.planOrder == this.planOrder &&
           other.planSubject == this.planSubject &&
           other.planContent == this.planContent &&
@@ -339,12 +376,13 @@ class Plan extends DataClass implements Insertable<Plan> {
           other.planType == this.planType &&
           other.planTime == this.planTime &&
           other.planDuration == this.planDuration &&
-          other.planWallet == this.planWallet);
+          other.planWallet == this.planWallet &&
+          other.planCreated == this.planCreated);
 }
 
 class PlansCompanion extends UpdateCompanion<Plan> {
-  final Value<int> authId;
-  final Value<int> userId;
+  final Value<int> tripId;
+  final Value<DateTime> planDate;
   final Value<int> planOrder;
   final Value<String> planSubject;
   final Value<String> planContent;
@@ -353,10 +391,11 @@ class PlansCompanion extends UpdateCompanion<Plan> {
   final Value<DateTime> planTime;
   final Value<int> planDuration;
   final Value<int> planWallet;
+  final Value<DateTime> planCreated;
   final Value<int> rowid;
   const PlansCompanion({
-    this.authId = const Value.absent(),
-    this.userId = const Value.absent(),
+    this.tripId = const Value.absent(),
+    this.planDate = const Value.absent(),
     this.planOrder = const Value.absent(),
     this.planSubject = const Value.absent(),
     this.planContent = const Value.absent(),
@@ -365,11 +404,12 @@ class PlansCompanion extends UpdateCompanion<Plan> {
     this.planTime = const Value.absent(),
     this.planDuration = const Value.absent(),
     this.planWallet = const Value.absent(),
+    this.planCreated = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   PlansCompanion.insert({
-    required int authId,
-    required int userId,
+    required int tripId,
+    required DateTime planDate,
     required int planOrder,
     required String planSubject,
     required String planContent,
@@ -378,9 +418,10 @@ class PlansCompanion extends UpdateCompanion<Plan> {
     required DateTime planTime,
     required int planDuration,
     required int planWallet,
+    this.planCreated = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : authId = Value(authId),
-        userId = Value(userId),
+  })  : tripId = Value(tripId),
+        planDate = Value(planDate),
         planOrder = Value(planOrder),
         planSubject = Value(planSubject),
         planContent = Value(planContent),
@@ -390,8 +431,8 @@ class PlansCompanion extends UpdateCompanion<Plan> {
         planDuration = Value(planDuration),
         planWallet = Value(planWallet);
   static Insertable<Plan> custom({
-    Expression<int>? authId,
-    Expression<int>? userId,
+    Expression<int>? tripId,
+    Expression<DateTime>? planDate,
     Expression<int>? planOrder,
     Expression<String>? planSubject,
     Expression<String>? planContent,
@@ -400,11 +441,12 @@ class PlansCompanion extends UpdateCompanion<Plan> {
     Expression<DateTime>? planTime,
     Expression<int>? planDuration,
     Expression<int>? planWallet,
+    Expression<DateTime>? planCreated,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (authId != null) 'auth_id': authId,
-      if (userId != null) 'user_id': userId,
+      if (tripId != null) 'trip_id': tripId,
+      if (planDate != null) 'plan_date': planDate,
       if (planOrder != null) 'plan_order': planOrder,
       if (planSubject != null) 'plan_subject': planSubject,
       if (planContent != null) 'plan_content': planContent,
@@ -413,13 +455,14 @@ class PlansCompanion extends UpdateCompanion<Plan> {
       if (planTime != null) 'plan_time': planTime,
       if (planDuration != null) 'plan_duration': planDuration,
       if (planWallet != null) 'plan_wallet': planWallet,
+      if (planCreated != null) 'plan_created': planCreated,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   PlansCompanion copyWith(
-      {Value<int>? authId,
-      Value<int>? userId,
+      {Value<int>? tripId,
+      Value<DateTime>? planDate,
       Value<int>? planOrder,
       Value<String>? planSubject,
       Value<String>? planContent,
@@ -428,10 +471,11 @@ class PlansCompanion extends UpdateCompanion<Plan> {
       Value<DateTime>? planTime,
       Value<int>? planDuration,
       Value<int>? planWallet,
+      Value<DateTime>? planCreated,
       Value<int>? rowid}) {
     return PlansCompanion(
-      authId: authId ?? this.authId,
-      userId: userId ?? this.userId,
+      tripId: tripId ?? this.tripId,
+      planDate: planDate ?? this.planDate,
       planOrder: planOrder ?? this.planOrder,
       planSubject: planSubject ?? this.planSubject,
       planContent: planContent ?? this.planContent,
@@ -440,6 +484,7 @@ class PlansCompanion extends UpdateCompanion<Plan> {
       planTime: planTime ?? this.planTime,
       planDuration: planDuration ?? this.planDuration,
       planWallet: planWallet ?? this.planWallet,
+      planCreated: planCreated ?? this.planCreated,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -447,11 +492,11 @@ class PlansCompanion extends UpdateCompanion<Plan> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (authId.present) {
-      map['auth_id'] = Variable<int>(authId.value);
+    if (tripId.present) {
+      map['trip_id'] = Variable<int>(tripId.value);
     }
-    if (userId.present) {
-      map['user_id'] = Variable<int>(userId.value);
+    if (planDate.present) {
+      map['plan_date'] = Variable<DateTime>(planDate.value);
     }
     if (planOrder.present) {
       map['plan_order'] = Variable<int>(planOrder.value);
@@ -477,6 +522,9 @@ class PlansCompanion extends UpdateCompanion<Plan> {
     if (planWallet.present) {
       map['plan_wallet'] = Variable<int>(planWallet.value);
     }
+    if (planCreated.present) {
+      map['plan_created'] = Variable<DateTime>(planCreated.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -486,8 +534,8 @@ class PlansCompanion extends UpdateCompanion<Plan> {
   @override
   String toString() {
     return (StringBuffer('PlansCompanion(')
-          ..write('authId: $authId, ')
-          ..write('userId: $userId, ')
+          ..write('tripId: $tripId, ')
+          ..write('planDate: $planDate, ')
           ..write('planOrder: $planOrder, ')
           ..write('planSubject: $planSubject, ')
           ..write('planContent: $planContent, ')
@@ -496,6 +544,7 @@ class PlansCompanion extends UpdateCompanion<Plan> {
           ..write('planTime: $planTime, ')
           ..write('planDuration: $planDuration, ')
           ..write('planWallet: $planWallet, ')
+          ..write('planCreated: $planCreated, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -755,10 +804,10 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $TripsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  static const VerificationMeta _tripIdMeta = const VerificationMeta('tripId');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
+  late final GeneratedColumn<int> tripId = GeneratedColumn<int>(
+      'trip_id', aliasedName, false,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
@@ -789,7 +838,7 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
       type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, authId, tripStartDate, tripEndDate, tripCountry];
+      [tripId, authId, tripStartDate, tripEndDate, tripCountry];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -800,8 +849,9 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    if (data.containsKey('trip_id')) {
+      context.handle(_tripIdMeta,
+          tripId.isAcceptableOrUnknown(data['trip_id']!, _tripIdMeta));
     }
     if (data.containsKey('auth_id')) {
       context.handle(_authIdMeta,
@@ -837,13 +887,13 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {tripId};
   @override
   Trip map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Trip(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      tripId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}trip_id'])!,
       authId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}auth_id'])!,
       tripStartDate: attachedDatabase.typeMapping.read(
@@ -862,13 +912,13 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
 }
 
 class Trip extends DataClass implements Insertable<Trip> {
-  final int id;
+  final int tripId;
   final int authId;
   final DateTime tripStartDate;
   final DateTime tripEndDate;
   final String tripCountry;
   const Trip(
-      {required this.id,
+      {required this.tripId,
       required this.authId,
       required this.tripStartDate,
       required this.tripEndDate,
@@ -876,7 +926,7 @@ class Trip extends DataClass implements Insertable<Trip> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
+    map['trip_id'] = Variable<int>(tripId);
     map['auth_id'] = Variable<int>(authId);
     map['trip_start_date'] = Variable<DateTime>(tripStartDate);
     map['trip_end_date'] = Variable<DateTime>(tripEndDate);
@@ -886,7 +936,7 @@ class Trip extends DataClass implements Insertable<Trip> {
 
   TripsCompanion toCompanion(bool nullToAbsent) {
     return TripsCompanion(
-      id: Value(id),
+      tripId: Value(tripId),
       authId: Value(authId),
       tripStartDate: Value(tripStartDate),
       tripEndDate: Value(tripEndDate),
@@ -898,7 +948,7 @@ class Trip extends DataClass implements Insertable<Trip> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Trip(
-      id: serializer.fromJson<int>(json['id']),
+      tripId: serializer.fromJson<int>(json['tripId']),
       authId: serializer.fromJson<int>(json['authId']),
       tripStartDate: serializer.fromJson<DateTime>(json['tripStartDate']),
       tripEndDate: serializer.fromJson<DateTime>(json['tripEndDate']),
@@ -909,7 +959,7 @@ class Trip extends DataClass implements Insertable<Trip> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'tripId': serializer.toJson<int>(tripId),
       'authId': serializer.toJson<int>(authId),
       'tripStartDate': serializer.toJson<DateTime>(tripStartDate),
       'tripEndDate': serializer.toJson<DateTime>(tripEndDate),
@@ -918,13 +968,13 @@ class Trip extends DataClass implements Insertable<Trip> {
   }
 
   Trip copyWith(
-          {int? id,
+          {int? tripId,
           int? authId,
           DateTime? tripStartDate,
           DateTime? tripEndDate,
           String? tripCountry}) =>
       Trip(
-        id: id ?? this.id,
+        tripId: tripId ?? this.tripId,
         authId: authId ?? this.authId,
         tripStartDate: tripStartDate ?? this.tripStartDate,
         tripEndDate: tripEndDate ?? this.tripEndDate,
@@ -933,7 +983,7 @@ class Trip extends DataClass implements Insertable<Trip> {
   @override
   String toString() {
     return (StringBuffer('Trip(')
-          ..write('id: $id, ')
+          ..write('tripId: $tripId, ')
           ..write('authId: $authId, ')
           ..write('tripStartDate: $tripStartDate, ')
           ..write('tripEndDate: $tripEndDate, ')
@@ -944,12 +994,12 @@ class Trip extends DataClass implements Insertable<Trip> {
 
   @override
   int get hashCode =>
-      Object.hash(id, authId, tripStartDate, tripEndDate, tripCountry);
+      Object.hash(tripId, authId, tripStartDate, tripEndDate, tripCountry);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Trip &&
-          other.id == this.id &&
+          other.tripId == this.tripId &&
           other.authId == this.authId &&
           other.tripStartDate == this.tripStartDate &&
           other.tripEndDate == this.tripEndDate &&
@@ -957,20 +1007,20 @@ class Trip extends DataClass implements Insertable<Trip> {
 }
 
 class TripsCompanion extends UpdateCompanion<Trip> {
-  final Value<int> id;
+  final Value<int> tripId;
   final Value<int> authId;
   final Value<DateTime> tripStartDate;
   final Value<DateTime> tripEndDate;
   final Value<String> tripCountry;
   const TripsCompanion({
-    this.id = const Value.absent(),
+    this.tripId = const Value.absent(),
     this.authId = const Value.absent(),
     this.tripStartDate = const Value.absent(),
     this.tripEndDate = const Value.absent(),
     this.tripCountry = const Value.absent(),
   });
   TripsCompanion.insert({
-    this.id = const Value.absent(),
+    this.tripId = const Value.absent(),
     required int authId,
     required DateTime tripStartDate,
     required DateTime tripEndDate,
@@ -980,14 +1030,14 @@ class TripsCompanion extends UpdateCompanion<Trip> {
         tripEndDate = Value(tripEndDate),
         tripCountry = Value(tripCountry);
   static Insertable<Trip> custom({
-    Expression<int>? id,
+    Expression<int>? tripId,
     Expression<int>? authId,
     Expression<DateTime>? tripStartDate,
     Expression<DateTime>? tripEndDate,
     Expression<String>? tripCountry,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
+      if (tripId != null) 'trip_id': tripId,
       if (authId != null) 'auth_id': authId,
       if (tripStartDate != null) 'trip_start_date': tripStartDate,
       if (tripEndDate != null) 'trip_end_date': tripEndDate,
@@ -996,13 +1046,13 @@ class TripsCompanion extends UpdateCompanion<Trip> {
   }
 
   TripsCompanion copyWith(
-      {Value<int>? id,
+      {Value<int>? tripId,
       Value<int>? authId,
       Value<DateTime>? tripStartDate,
       Value<DateTime>? tripEndDate,
       Value<String>? tripCountry}) {
     return TripsCompanion(
-      id: id ?? this.id,
+      tripId: tripId ?? this.tripId,
       authId: authId ?? this.authId,
       tripStartDate: tripStartDate ?? this.tripStartDate,
       tripEndDate: tripEndDate ?? this.tripEndDate,
@@ -1013,8 +1063,8 @@ class TripsCompanion extends UpdateCompanion<Trip> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
+    if (tripId.present) {
+      map['trip_id'] = Variable<int>(tripId.value);
     }
     if (authId.present) {
       map['auth_id'] = Variable<int>(authId.value);
@@ -1034,7 +1084,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
   @override
   String toString() {
     return (StringBuffer('TripsCompanion(')
-          ..write('id: $id, ')
+          ..write('tripId: $tripId, ')
           ..write('authId: $authId, ')
           ..write('tripStartDate: $tripStartDate, ')
           ..write('tripEndDate: $tripEndDate, ')

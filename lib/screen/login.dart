@@ -17,6 +17,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(" ============ 2. Login ============");
+    var idController = TextEditingController(text:"asd9001@naver.com");
+    var pwController = TextEditingController(text: "chang");
     return SafeArea(
       child: Scaffold(
         backgroundColor: PRIMARY_COLOR,
@@ -34,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text("ID"),
                     SizedBox(height: 20),
                     TextFormField(
+                      controller: idController,
                       onSaved: (val) {
                         if (val != null) {
                           setState(() {
@@ -51,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text("PASSWORD"),
                     SizedBox(height: 20),
                     TextFormField(
+                      controller: pwController,
                       obscureText: true,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -96,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           return;
                         }
                         // Navigator.of(context).pop(users[0].userName);
-                        Navigator.of(context).pushNamed('/select',arguments: users[0]);
+                        Navigator.of(context).pushNamed('/select_country',arguments: users[0]);
                         return;
                       },
                       child: Text("Login"),

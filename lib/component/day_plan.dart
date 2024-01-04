@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:j_planner/component/schedule_bottom_sheet.dart';
+import 'package:j_planner/database/drift_database.dart';
 import 'package:j_planner/schedule/schedule.dart';
 
 class DayPlan extends StatefulWidget {
+  int tripId;
   DateTime day;
-  List<ScheduleItem> plans;
+  List<Plan> plans;
   DayPlan({
     super.key,
+    required this.tripId,
     required this.day,
     required this.plans,
   });
@@ -22,17 +25,20 @@ class _DayPlanState extends State<DayPlan> {
   var dateFormat = DateFormat("yyyy-MM-dd");
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    widget.plans.forEach((element) {
-      plans.add(ScheduleItem.clone(element));
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    print("============ 6. DayPlans =============");
+
+    plans = [];
+    widget.plans.forEach((element) {
+      if (widget.day != element.planDate) {
+        return;
+      }
+      plans.add(ScheduleItem.clonePlan(element));
+    });
+    print(" tripId : ${widget.tripId}");
+    print(" day : ${widget.day}");
+    print(" plans : ${plans}");
+
     plans = reorderPlans(plans);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -60,18 +66,26 @@ class _DayPlanState extends State<DayPlan> {
           onReorder: reorderFunction,
         ),
         ElevatedButton(
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (_) {
-                return ScheduleBottomSheet();
-              },
-            ).then((value) {
-              setState(() {
-                plans.add(value);
-              });
-            });
+          onPressed: () async {
+            Map<String, dynamic> tripArg = new Map();
+            tripArg["selectedDate"] = widget.day;
+            tripArg["tripId"] = widget.tripId;
+
+            Navigator.of(context).pushNamed(
+              "/add_plan",
+              arguments: tripArg,
+            );
+            // showModalBottomSheet(
+            //   context: context,
+            //   isScrollControlled: true,
+            //   builder: (_) {
+            //     return ScheduleBottomSheet();
+            //   },
+            // ).then((value) {
+            //   setState(() {
+            //     plans.add(value);
+            //   });
+            // });
           },
           child: Icon(Icons.add),
         ),
@@ -136,6 +150,11 @@ class _DayPlanState extends State<DayPlan> {
   }
 
   reorderPlans(List<ScheduleItem> plans) {
+    print("============ 6.1. Start ReorderPlans ============");
+    if (plans.length == 0) {
+      print("============ 6.1. End ReorderPlans (length == 0) ============");
+      return plans;
+    }
     var startTime = plans[0].time;
     var sumTime = plans[0].time;
     List<ScheduleItem> returnPlans = [
@@ -156,6 +175,8 @@ class _DayPlanState extends State<DayPlan> {
       returnPlans.add(e);
       return e;
     });
+    print(" returnPlans : ${returnPlans}");
+    print("============ 6.1. End ReorderPlans ============");
     return returnPlans;
   }
 }

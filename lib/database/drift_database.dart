@@ -17,10 +17,11 @@ class LocalDatabase extends _$LocalDatabase {
 
   // Common
   Future<void> clearDb() async {
-    delete(users);
-    delete(trips);
-    delete(auths);
-    delete(plans);
+    print("clearDb");
+    await delete(users).go();
+    await delete(trips).go();
+    await delete(auths).go();
+    await delete(plans).go();
   }
 
   // User
@@ -30,16 +31,11 @@ class LocalDatabase extends _$LocalDatabase {
         ..where((tbl) => tbl.userEmail.equals(email) & tbl.userPw.equals(pw)))
       .get();
   // Trip
-  Future<List<Trip>> selectTrips(List<int> authIds) {
-    return (select(trips)..where((tbl) => tbl.authId.isIn(authIds))).get();
-  }
-
-  Future<int> addTrip(TripsCompanion trip) {
-    print("addTrip--------");
-    print(trip);
-    print("addTrip--------");
-    return into(trips).insert(trip);
-  }
+  Future<List<Trip>> selectTrips(List<int> authIds) =>
+      (select(trips)..where((tbl) => tbl.authId.isIn(authIds))).get();
+  Future<List<Trip>> selectTrip(int tripId) =>
+      (select(trips)..where((tbl) => tbl.tripId.equals(tripId))).get();
+  Future<int> addTrip(TripsCompanion trip) => into(trips).insert(trip);
 
   // Auth
   Future<int> addAuth(AuthsCompanion auth) => (into(auths).insert(auth));
@@ -50,7 +46,11 @@ class LocalDatabase extends _$LocalDatabase {
   Future<List<Auth>> selectAuth(int authId, int userId) => (select(auths)
         ..where((tbl) => tbl.authId.equals(authId) & tbl.userId.equals(userId)))
       .get();
+
   // Plan
+  Future<List<Plan>> selectPlans(int tripId) =>
+      (select(plans)..where((tbl) => tbl.tripId.equals(tripId))).get();
+  Future<int> addPlan(PlansCompanion plan) => (into(plans).insert(plan));
   @override
   int get schemaVersion => 1;
 }

@@ -1,8 +1,9 @@
 import 'package:drift/drift.dart';
 
 class Plans extends Table {
-  IntColumn get authId => integer()(); // FK
-  IntColumn get userId => integer()(); // FK
+  IntColumn get tripId => integer()(); // FK
+  // IntColumn get userId => integer()(); // FK
+  DateTimeColumn get planDate => dateTime()();
   IntColumn get planOrder => integer()();
   TextColumn get planSubject => text()();
   TextColumn get planContent => text()();
@@ -11,4 +12,5 @@ class Plans extends Table {
   DateTimeColumn get planTime => dateTime()();
   IntColumn get planDuration => integer()();
   IntColumn get planWallet => integer()();
+  DateTimeColumn get planCreated => dateTime().withDefault(currentDateAndTime)();
 }

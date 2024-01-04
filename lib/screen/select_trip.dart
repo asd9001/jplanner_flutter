@@ -25,6 +25,12 @@ class _SelectTripScreenState extends State<SelectTripScreen> {
   TextEditingController _textFieldController = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var arg = ModalRoute.of(context)!.settings.arguments;
     User user;
@@ -38,10 +44,10 @@ class _SelectTripScreenState extends State<SelectTripScreen> {
       user = arg as User;
     }
     this.userId = user.userId;
-    if (initial) {
+    // if (initial) {
       getTrips(user.userId);
       initial = false;
-    }
+    // }
     print("build==========");
     print(trips);
     print("build==========");
@@ -64,7 +70,7 @@ class _SelectTripScreenState extends State<SelectTripScreen> {
           return Card(
             child: ListTile(
               title: Text(e.tripCountry),
-              subtitle: Text('${this.startDate} ~ ${this.endDate}'),
+              subtitle: Text('${e.tripStartDate} ~ ${e.tripEndDate}'),
               trailing: Icon(Icons.more_vert),
               isThreeLine: true,
               onTap: () {
@@ -139,16 +145,6 @@ class _SelectTripScreenState extends State<SelectTripScreen> {
       backgroundColor: Colors.white,
       primaryColor: Colors.green,
       onApplyClick: (start, end) async {
-        print("OnApplyClick===========");
-        print(start);
-        print(end);
-        print(TripsCompanion(
-          authId: Value(authId),
-          tripCountry: Value(tripCountry),
-          tripStartDate: Value(start!),
-          tripEndDate: Value(end!),
-        ));
-        print("OnApplyClick===========");
         final tripId = await GetIt.I<LocalDatabase>().addTrip(
           TripsCompanion(
             authId: Value(authId),
@@ -159,10 +155,8 @@ class _SelectTripScreenState extends State<SelectTripScreen> {
         );
         setState(() {
           this.tripId = tripId;
-          endDate = end;
-          startDate = start;
           trips.add(Trip(
-              id: 0,
+              tripId: 0,
               authId: authId,
               tripStartDate: start,
               tripEndDate: end,

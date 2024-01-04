@@ -1,3 +1,5 @@
+import 'package:j_planner/database/drift_database.dart';
+
 enum ScheduleItemType { time, duration }
 
 class ScheduleItem {
@@ -20,6 +22,13 @@ class ScheduleItem {
           value.type,
           value.content,
         );
+  ScheduleItem.clonePlan(Plan value)
+      : this(
+    value.planDuration,
+    value.planTime,
+    ScheduleItemType.values[value.planType],
+    value.planContent,
+  );
 
   @override
   String toString() {
